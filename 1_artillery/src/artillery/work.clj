@@ -15,11 +15,16 @@
 ;;; It always returns PI / 2 (missile is launched straight up).
 ;;; You can either calculate answer or find it by trying and adjusting different angles.
 (defn plane-static-solution []
-  (* 0.5 Math/PI))
+  (let [t (/ 5 (Math/sqrt 164))]
+  (+ (Math/acos t) (Math/acos (* 2 t)))))
+;(defn plane-static-solution [] 1.844433867959335); - exact value
+
+;needed to solve equation
+;8 * sin(x) + 10 * cos(x) = 5
 
 ;;; Here's a function that will show you animation with plane you launching missiles.
 ;;; You need to pass your solution (function name) to this function and run this file.
-(plane-static plane-static-solution)
+;(plane-static plane-static-solution)
 
 
 
@@ -34,7 +39,12 @@
 ;;; trg-x trg-y - target's coordinates.
 ;;; Run and see how it launches missile now and then fix it to hit the plane.
 (defn plane-dynamic-solution [pl-x pl-y trg-x trg-y]
-  (Math/atan2 (- trg-y pl-y) (- trg-x pl-x)))
+  (let [dx (- pl-x trg-x) dy (- trg-y pl-y)
+  t (/ dy (Math/sqrt (+ (* dx dx) (* dy dy))))]
+  (+ (Math/acos t) (Math/acos (/ t 2)))))
+
+;needed to solve equation
+;2 * (pl-x - trg-x) * sin(x) + 2 * (trg-y - pl-y) * cos(x) = trg-y - pl-y
 
 ;;; To run program uncomment - remove ';' symbol before '(plane-dynamic ...)'
 ;;; And also comment previous task - add ';' symbol before '(plane-static ...)'
@@ -55,14 +65,32 @@
 ;;; Now you don't have template function, so write one yourself.
 ;;; Hint: try to pass random angle at first e.g. 0.5 and see how it works.
 ;;; To run program uncomment it (and comment others) and pass your function to it.
-; (ufo-static YOUR_SOLUTION)
+(defn ufo-static-solution []
+  (let [t (Math/sqrt 136)]
+  (/ (- (Math/acos (/ -11 t)) (Math/acos (/ 6 t))) 2)))
+;(defn ufo-static-solution [] 0.886340422598924); - exact value
+
+;needed to solve equation
+;20 * sin(x) * cos(x) - 12 * cos^2(x) = 5
+
+;(ufo-static ufo-static-solution)
 
 
 
 ;;; Same UFO, but now it appears at random position (same as plane-dynamic).
 ;;; Your position is also changing.
 ;;; You need to write function that takes 4 arguments: your position (x, y)  and UFO's position (x, y).
-; (ufo-dynamic YOUR_SOLUTION)
+(defn ufo-dynamic-solution [pl-x pl-y trg-x trg-y]
+  (let [dx (- trg-x pl-x) dy (- trg-y pl-y)
+  t (Math/sqrt (+ (* dx dx) (* dy dy)))]
+  (/ (- (Math/acos (Math/max (- (/ (+ dy (/ (* dx dx) 1000)) t)) -1.0)) (Math/asin (/ dx t))) 2)))
+
+;needed to solve equation
+;2000 * (trg-x - pl-x) * sin(x) * cos(x) - 2000 * (trg-y - pl-y) * cos^2(x) = (trg-x - pl-x)^2
+;used max because in some cases acos is calculated from values less than -1
+
+(ufo-dynamic ufo-dynamic-solution)
+
 
 
 
