@@ -2,7 +2,7 @@
   (:use [artillery.core :only (plane-static plane-dynamic ufo-static ufo-dynamic)]))
 
 
-;;; You goal is to hit plane my missile.
+;;; You goal is to hit plane by missile.
 ;;; Plane always starts at position x = 0, y = 500.
 ;;; Plane's speed equal to 5.
 ;;; Plane flies from the left to the right. So it's positions will be (0, 500), (5, 500), (10, 500), etc...
