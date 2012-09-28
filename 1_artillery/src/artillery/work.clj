@@ -83,11 +83,11 @@
 (defn ufo-dynamic-solution [pl-x pl-y trg-x trg-y]
   (let [dx (- trg-x pl-x) dy (- trg-y pl-y)
   t (Math/sqrt (+ (* dx dx) (* dy dy)))]
-  (/ (- (Math/acos (Math/max (- (/ (+ dy (/ (* dx dx) 1000)) t)) -1.0)) (Math/asin (/ dx t))) 2)))
+  (/ (+ (Math/asin (Math/min (/ (+ dy (/ (* dx dx) 1000)) t) 1.0)) (Math/acos (/ dx t))) 2)))
 
 ;needed to solve equation
 ;2000 * (trg-x - pl-x) * sin(x) * cos(x) - 2000 * (trg-y - pl-y) * cos^2(x) = (trg-x - pl-x)^2
-;used max because in some cases acos is calculated from values less than -1
+;used min because in some cases asin is calculated from values greater than 1
 
 (ufo-dynamic ufo-dynamic-solution)
 
