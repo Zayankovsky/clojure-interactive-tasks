@@ -28,7 +28,7 @@
 (defn conway-color [state]
   (if (= state :alive) [0 255 0] [0 0 0]))
 
-;(play @conway-init conway-rules conway-color :alive :dead)
+(play @conway-init conway-rules conway-color :alive :dead)
 
 
 ;;; Implement and run Brian's Brain automaton in your simulator: http://en.wikipedia.org/wiki/Brian%27s_Brain
@@ -115,7 +115,7 @@
         (contains? ant-black state) [127 0 0]
         (contains? ant-white state) [255 127 127]))
 
-(play @langtons-ant-init langtons-ant-rules langtons-ant-color :black :white)
+;(play @langtons-ant-init langtons-ant-rules langtons-ant-color :black :white)
 
 
 ;;; Add ability to change cells' states by mouse click, to restart and pause simulation.
