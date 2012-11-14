@@ -45,7 +45,7 @@
   (let [allowedranks (if (empty? table) #{6 7 8 9 10 11 12 13 14} (reduce #(conj %1 (%2 :rank)) #{} table))
         allallowedcards (filter #(contains? allowedranks (% :rank)) hand)
         notramps (remove #(= (% :suit) tramp) allallowedcards)
-        allowedcards (if (empty? notramps) allallowedcards notramps)]
+        allowedcards (if (and (empty? notramps) (empty? table)) allallowedcards notramps)]
     (if (empty? allowedcards) nil (some #(if (= (% :rank) (apply min (map :rank allowedcards))) %) allowedcards))))
 
 (defn defend [{:keys [hand table tramp]}]
@@ -73,4 +73,4 @@
 
 
 
-;;; Modify program such that it can play with 3 or 4 players.
+;;; Modify program so that it can play with 3 or 4 players.
