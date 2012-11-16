@@ -17,36 +17,24 @@
 (defn distance [[x1 y1] [x2 y2]]
   (let [dx (- x1 x2)
         dy (- y1 y2)]
-    (Math/sqrt (+ (* dx dx) (* dy dy)))))
+    (+ (* dx dx) (* dy dy))))
 
 (defn mean [points]
   (map #(/ % (count points)) (apply map + points)))
 
-(defn run-2-circles-solution [points]
-  ((fn lloyd [center1 center2]
-    (let [parts (reduce #(if (<= (distance %2 center1) (distance %2 center2)) [(conj (first %1) %2) (last %1)] [(first %1) (conj (last %1) %2)]) [[] []] points)
-          new-center1 (mean (first parts))
-          new-center2 (mean (last parts))]
-      (if (and (= center1 new-center1) (= center2 new-center2)) parts (lloyd new-center1 new-center2)))) (first points) (last points)))
+(defn run-k-circles-solution [k points]
+  (let [d (/ (dec (count points)) (dec k))]
+    ((fn lloyd [centers]
+      (let [[cf & cr] centers
+            parts (vals (reduce (fn [m p]
+                                  (update-in m [(first (reduce #(let [d (distance %2 p)]
+                                                                  (if (< d (last %1)) [%2 d] %1)) [cf (distance cf p)] cr))] conj p)) {} points))
+            new-centers (map mean parts)]
+        (if (= centers new-centers) parts (lloyd new-centers)))) (for [t (range k)] (nth points (int (* t d)))))))
 
-;(run-2-circles run-2-circles-solution)
+;(run-2-circles #(run-k-circles-solution 2 %))
 
-(defn run-3-circles-solution [points]
-  ((fn lloyd [center1 center2 center3]
-    (let [parts (reduce #(let [d1 (distance %2 center1)
-                               d2 (distance %2 center2)
-                               d3 (distance %2 center3)]
-                           (if (<= d1 d2)
-                             (if (<= d1 d3) [(conj (first %1) %2) (second %1) (last %1)]
-                                            [(first %1) (second %1) (conj (last %1) %2)])
-                             (if (<= d2 d3) [(first %1) (conj (second %1) %2) (last %1)]
-                                            [(first %1) (second %1) (conj (last %1) %2)]))) [[] [] []] points)
-          new-center1 (mean (first parts))
-          new-center2 (mean (second parts))
-          new-center3 (mean (last parts))]
-      (if (and (= center1 new-center1) (= center2 new-center2) (= center3 new-center3)) parts (lloyd new-center1 new-center2 new-center3)))) (first points) (nth points (/ (count points) 2)) (last points)))
-
-(run-3-circles run-3-circles-solution)
+(run-3-circles #(run-k-circles-solution 3 %))
 
 ;;; Manipulation: mouse click - add new point
 ;;;               space - reset simulation (remove all points or regenerate them, depends on test)
