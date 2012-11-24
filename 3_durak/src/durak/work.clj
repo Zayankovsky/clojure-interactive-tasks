@@ -27,13 +27,13 @@
 ;;; {:hand  [{:rank 6, :suit :clubs}
 ;;;          {:rank 8, :suit :hearts}],
 ;;;  :table [{:rank 6, :suit :hearts}],
-;;;  :tramp :clubs}
+;;;  :trump :clubs}
 ;;; Hand is a sequence of cards in your hand.
 ;;; Table is a sequence of cards already on table.
 ;;; If you are an attacker and it's start of an attack then table will be empty.
 ;;; If your are a defender then table will be non-empty and your need to beat last card from the table.
 ;;; Cards on the table can be represented like: attack  - defense - attack - defense - attack. Odd cards are attack, even cards are defense.
-;;; Tramp is tramp suit of the game.
+;;; trump is trump suit of the game.
 
 ;;; To test your solution call (run-game YOUR_SOLUTION)
 ;;; Your bot is the player in the lower part of screen (cards are visible to you).
@@ -41,18 +41,18 @@
 ;;; When game is over (one of the players has no cards in his hand) nothing will happen when your press SPACE.
 ;;; If your press SPACE and nothing happen and game is not over yet, look at stack traces, probably your bot (or built-in bot) tries to perform invalid attack or defense.
 
-(defn attack [{:keys [hand table tramp]}]
+(defn attack [{:keys [hand table trump]}]
   (let [allowedranks (if (empty? table) #{6 7 8 9 10 11 12 13 14} (reduce #(conj %1 (%2 :rank)) #{} table))
         allallowedcards (filter #(contains? allowedranks (% :rank)) hand)
-        notramps (remove #(= (% :suit) tramp) allallowedcards)
-        allowedcards (if (and (empty? notramps) (empty? table)) allallowedcards notramps)]
+        notrumps (remove #(= (% :suit) trump) allallowedcards)
+        allowedcards (if (and (empty? notrumps) (empty? table)) allallowedcards notrumps)]
     (if (empty? allowedcards) nil (some #(if (= (% :rank) (apply min (map :rank allowedcards))) %) allowedcards))))
 
-(defn defend [{:keys [hand table tramp]}]
+(defn defend [{:keys [hand table trump]}]
   (let [{:keys [suit rank]} (last table)
-        allallowedcards (filter #(or (and (= (% :suit) suit) (> (% :rank) rank)) (if (not= suit tramp) (= (% :suit) tramp))) hand)
-        notramps (remove #(= (% :suit) tramp) allallowedcards)
-        allowedcards (if (empty? notramps) allallowedcards notramps)]
+        allallowedcards (filter #(or (and (= (% :suit) suit) (> (% :rank) rank)) (if (not= suit trump) (= (% :suit) trump))) hand)
+        notrumps (remove #(= (% :suit) trump) allallowedcards)
+        allowedcards (if (empty? notrumps) allallowedcards notrumps)]
     (if (empty? allowedcards) nil (some #(if (= (% :rank) (apply min (map :rank allowedcards))) %) allowedcards))))
 
 (run-game {:attack attack, :defend defend})
